@@ -1,6 +1,6 @@
 package com.hfaria.ctw.topheadlines.integration.setup
 
-import com.hfaria.ctw.topheadlines.integration.TopHeadlines
+import com.hfaria.ctw.topheadlines.integration.GetTopHeadlinesTest
 import com.hfaria.ctw.topheadlines.di.AppComponent
 import com.hfaria.ctw.topheadlines.di.DataLayerModule
 import dagger.BindsInstance
@@ -25,5 +25,5 @@ interface NetworkTestComponent : AppComponent {
         fun build(): NetworkTestComponent
     }
 
-    fun inject(test: TopHeadlines)
+    fun inject(test: GetTopHeadlinesTest)
 }
