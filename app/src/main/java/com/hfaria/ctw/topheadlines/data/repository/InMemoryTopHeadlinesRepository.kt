@@ -5,7 +5,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
 import com.hfaria.ctw.topheadlines.domain.Article
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class InMemoryTopHeadlinesRepository @Inject constructor(

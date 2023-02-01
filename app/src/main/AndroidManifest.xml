@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hfaria.ctw.topheadlines">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".android.TopHeadlinesApp"
         android:allowBackup="true"

@@ -1,8 +1,8 @@
 package com.hfaria.ctw.topheadlines.domain
 
 data class Article(
+    val title: String,
     val author: String?,
-    val title: String?,
     val description: String?,
     val url: String?,
     val urlToImage: String?,
