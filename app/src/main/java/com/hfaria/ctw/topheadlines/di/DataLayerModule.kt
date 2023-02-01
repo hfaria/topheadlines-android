@@ -3,6 +3,8 @@ package com.hfaria.ctw.topheadlines.di
 import com.hfaria.ctw.topheadlines.BuildConfig
 import com.hfaria.ctw.topheadlines.data.network.NetworkResponseCallAdapterFactory
 import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
+import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesRepository
+import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -38,5 +40,11 @@ class DataLayerModule {
             .client(okHttpClient)
             .build()
             .create(TopHeadlinesApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTopHeadlinesRepository(api: TopHeadlinesApi): TopHeadlinesRepository {
+        return InMemoryTopHeadlinesRepository(api, 20)
     }
 }

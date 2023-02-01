@@ -25,7 +25,6 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.cpiFetching.visibility = View.VISIBLE
         //viewModel.routes.userProfileRoute.observe(viewLifecycleOwner) { user ->
         //    Toast
         //        .makeText(requireActivity(), "NAME: ${user.name.orEmpty()}", Toast.LENGTH_LONG)
@@ -37,5 +36,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
                 .makeText(requireActivity(), message, Toast.LENGTH_LONG)
                 .show()
         }
+
+        viewModel.getTopHeadlines()
     }
 }
