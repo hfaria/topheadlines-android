@@ -10,7 +10,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TopHeadlinesScreenState: BaseScreenState() {
+interface TopHeadlinesScreenState {
+    fun loadArticlePage(page: PagingData<Article>)
+    fun routeToHeadlineProfile(article: Article)
+}
+
+
+class TopHeadlinesScreenStateImpl : TopHeadlinesScreenState, BaseScreenState() {
     val articlePage: LiveData<PagingData<Article>>
         get() = _articlePage
     private val _articlePage = MutableLiveData<PagingData<Article>>()
@@ -19,20 +25,20 @@ class TopHeadlinesScreenState: BaseScreenState() {
         get() = _articleProfileRoute
     private val _articleProfileRoute = MutableLiveData<Article>()
 
-    fun routeToArticleProfileScreen(article: Article) {
+    override fun routeToHeadlineProfile(article: Article) {
         _articleProfileRoute.value = article
     }
 
-    fun loadArticlePage(page: PagingData<Article>) {
+    override fun loadArticlePage(page: PagingData<Article>) {
         _articlePage.value = page
     }
 }
 
 class TopHeadlinesViewModel @Inject constructor(
+    val state: TopHeadlinesScreenState = TopHeadlinesScreenStateImpl(),
     private val topHeadlines: TopHeadlinesRepository
 ) : ViewModel() {
 
-    val state = TopHeadlinesScreenState()
 
     fun getTopHeadlines() {
         viewModelScope.launch {
@@ -43,6 +49,6 @@ class TopHeadlinesViewModel @Inject constructor(
     }
 
     fun onArticleClick(article: Article) {
-        state.routeToArticleProfileScreen(article)
+        state.routeToHeadlineProfile(article)
     }
 }

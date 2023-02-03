@@ -2,9 +2,12 @@ package com.hfaria.ctw.topheadlines.di
 
 import androidx.lifecycle.ViewModel
 import com.hfaria.ctw.topheadlines.ui.TopHeadlinesFragment
+import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenState
+import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenStateImpl
 import com.hfaria.ctw.topheadlines.ui.TopHeadlinesViewModel
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 
@@ -19,4 +22,10 @@ abstract class TopHeadlinesModule {
     @ViewModelKey(TopHeadlinesViewModel::class)
     abstract fun bindViewModel(viewmodel: TopHeadlinesViewModel): ViewModel
 
+    companion object {
+        @Provides
+        fun providesTopHeadlinesScreenState(): TopHeadlinesScreenState {
+            return TopHeadlinesScreenStateImpl()
+        }
+    }
 }

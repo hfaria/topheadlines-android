@@ -24,7 +24,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
         binding = FragmentTopHeadlinesBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.vm = viewModel
-        binding.state = viewModel.state
+        binding.state = viewModel.state as TopHeadlinesScreenStateImpl
         adapter = TopHeadlinesAdapter(viewModel::onArticleClick)
         binding.rvTopHeadlines.adapter = adapter
         return binding.root
@@ -32,7 +32,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val state = viewModel.state
+        val state = viewModel.state as TopHeadlinesScreenStateImpl
 
         state.articleProfileRoute.observe(viewLifecycleOwner) { article->
             Toast
