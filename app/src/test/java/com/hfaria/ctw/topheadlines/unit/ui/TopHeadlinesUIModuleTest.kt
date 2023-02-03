@@ -1,5 +1,6 @@
 package com.hfaria.ctw.topheadlines.unit.ui
 
+import androidx.paging.PagingData
 import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenState
@@ -26,6 +27,14 @@ class TopHeadlinesUIModuleTest {
     @Before
     fun setup() {
         vm = TopHeadlinesViewModel(state, repo)
+    }
+
+    @Test
+    fun `On startup, should fetch Headline pages`() {
+        // TODO
+        //val article = Article(title = "FOOBAR")
+        //vm.getTopHeadlines()
+        //verify(state, times(1)).loadArticlePage(article)
     }
 
     @Test

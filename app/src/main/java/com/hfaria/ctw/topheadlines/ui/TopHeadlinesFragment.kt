@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import com.hfaria.ctw.topheadlines.databinding.FragmentTopHeadlinesBinding
 import com.hfaria.ctw.topheadlines.ui.base.BaseFragment
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
@@ -24,7 +22,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
         binding = FragmentTopHeadlinesBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.vm = viewModel
-        binding.state = viewModel.state as TopHeadlinesScreenStateImpl
+        binding.state = viewModel.state
         adapter = TopHeadlinesAdapter(viewModel::onArticleClick)
         binding.rvTopHeadlines.adapter = adapter
         return binding.root
@@ -32,8 +30,11 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val state = viewModel.state as TopHeadlinesScreenStateImpl
+        setupObservables(viewModel.state)
+        viewModel.getTopHeadlines()
+    }
 
+    private fun setupObservables(state: TopHeadlinesScreenState) {
         state.articleProfileRoute.observe(viewLifecycleOwner) { article->
             Toast
                 .makeText(requireActivity(), "TITLE: ${article.title}", Toast.LENGTH_LONG)
@@ -51,21 +52,5 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
                 adapter.submitData(page)
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { state ->
-                if (state.refresh is LoadState.Loading) {
-                    binding.cpiFetching.visibility = View.VISIBLE
-                } else if (state.append.endOfPaginationReached) {
-                    Toast
-                        .makeText(requireActivity(), "Done loading completed challenges", Toast.LENGTH_LONG)
-                        .show()
-                } else {
-                    binding.cpiFetching.visibility = View.GONE
-                }
-            }
-        }
-
-        viewModel.getTopHeadlines()
     }
 }

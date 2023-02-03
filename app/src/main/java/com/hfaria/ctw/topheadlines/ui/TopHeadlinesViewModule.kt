@@ -3,25 +3,29 @@ package com.hfaria.ctw.topheadlines.ui
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.cleanarch.codewars.demo.ui.base.BaseScreenState
+import com.hfaria.ctw.topheadlines.ui.base.BaseScreenState
 import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
+import com.hfaria.ctw.topheadlines.ui.base.ErrorScreenState
+import com.hfaria.ctw.topheadlines.ui.base.LoadingScreenState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-interface TopHeadlinesScreenState {
+interface TopHeadlinesScreenState : ErrorScreenState, LoadingScreenState {
+    val articlePage: LiveData<PagingData<Article>>
+    val articleProfileRoute: LiveData<Article>
+
     fun loadArticlePage(page: PagingData<Article>)
     fun routeToHeadlineProfile(article: Article)
 }
 
-
 class TopHeadlinesScreenStateImpl : TopHeadlinesScreenState, BaseScreenState() {
-    val articlePage: LiveData<PagingData<Article>>
+    override val articlePage: LiveData<PagingData<Article>>
         get() = _articlePage
     private val _articlePage = MutableLiveData<PagingData<Article>>()
 
-    val articleProfileRoute: LiveData<Article>
+    override val articleProfileRoute: LiveData<Article>
         get() = _articleProfileRoute
     private val _articleProfileRoute = MutableLiveData<Article>()
 
