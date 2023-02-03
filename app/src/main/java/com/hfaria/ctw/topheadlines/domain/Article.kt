@@ -1,5 +1,7 @@
 package com.hfaria.ctw.topheadlines.domain
 
+import java.io.Serializable
+
 data class Article(
     val title: String,
     val description: String = "",
@@ -8,4 +10,4 @@ data class Article(
     val url: String? = null,
     val urlToImage: String? = null,
     val content: String? = null,
-)
+) : Serializable
