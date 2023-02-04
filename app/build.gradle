@@ -24,16 +24,6 @@ android {
             "\"4ed207b802d54b0a862ef7a2c7e401cb\""
         )
 
-        buildConfigField(
-            "String", "NEWS_SOURCE",
-            "\"bbc-news\""
-        )
-
-        buildConfigField(
-                "String", "NEWS_SOURCE_TITLE",
-                "\"BBC News\""
-        )
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -43,6 +33,47 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "news_source"
+
+    productFlavors {
+        bbcnews {
+            dimension "news_source"
+            applicationIdSuffix = ".bbcnews"
+            versionNameSuffix = "-BBC"
+            versionCode = 1
+            versionName = "1.0.0"
+
+            buildConfigField(
+                    "String", "NEWS_SOURCE",
+                    "\"bbc-news\""
+            )
+
+            buildConfigField(
+                    "String", "NEWS_SOURCE_TITLE",
+                    "\"BBC News\""
+            )
+        }
+
+        cnn {
+            dimension "news_source"
+            applicationIdSuffix = ".cnn"
+            versionNameSuffix = "-CNN"
+            versionCode = 1
+            versionName = "1.0.0"
+
+            buildConfigField(
+                    "String", "NEWS_SOURCE",
+                    "\"cnn\""
+            )
+
+            buildConfigField(
+                    "String", "NEWS_SOURCE_TITLE",
+                    "\"CNN\""
+            )
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
