@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.hfaria.ctw.topheadlines.databinding.FragmentArticleContentBinding
 import com.hfaria.ctw.topheadlines.domain.Article
+import com.squareup.picasso.Picasso
 
 class ArticleContentFragment : Fragment() {
 
@@ -21,6 +22,9 @@ class ArticleContentFragment : Fragment() {
         binding = FragmentArticleContentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.article = article
+        article.urlToImage?.let {
+            Picasso.get().load(it).into(binding.ivArticleBanner)
+        }
         return binding.root
     }
 }
