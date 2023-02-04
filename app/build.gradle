@@ -29,6 +29,11 @@ android {
             "\"bbc-news\""
         )
 
+        buildConfigField(
+                "String", "NEWS_SOURCE_TITLE",
+                "\"BBC News\""
+        )
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
