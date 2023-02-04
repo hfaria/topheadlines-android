@@ -3,8 +3,10 @@ package com.hfaria.ctw.topheadlines.unit.data
 import androidx.paging.PagingSource
 import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource
+import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource.Companion.API_ERROR
 import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource.Companion.UNKNOWN_NETWORK_ERROR
 import com.hfaria.ctw.topheadlines.domain.Article
+import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.API_ERROR_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES_LAST_PAGE
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.EMPTY_NETWORK_RESPONSE
@@ -42,10 +44,19 @@ object GetTopHeadlinesFakeResponses {
             articles = ARTICLES
         )
     )
+
     val SUCCESS_RESPONSE_LAST_PAGE = SuccessNetworkResponse(
         GetTopHeadlinesResponse(
             totalResults = ARTICLES_LAST_PAGE.size,
             articles = ARTICLES_LAST_PAGE
+        )
+    )
+
+    val API_ERROR_RESPONSE = SuccessNetworkResponse(
+        GetTopHeadlinesResponse(
+            status  = NewsApiStatus.ERROR,
+            code    = "225",
+            message = "FakeError"
         )
     )
 
@@ -99,7 +110,6 @@ class InMemoryTopHeadlinesPagingSourceTest {
 
     @Test
     fun `Load first page`() = runBlocking {
-        // First Page
         runPageLoadingTest(
             context = this.coroutineContext,
             curPage = null,
@@ -138,6 +148,31 @@ class InMemoryTopHeadlinesPagingSourceTest {
                 nextKey = null
             )
         )
+    }
+
+    @Test
+    fun `Should handle NewsApiStatus ERROR response`() = runBlocking {
+        `when`(api.getTopHeadlines(
+            anyString(),
+            anyInt(),
+            anyInt()
+        )).thenReturn(API_ERROR_RESPONSE)
+
+        val expected = PagingSource.LoadResult.Error<Int, Article>(
+            Throwable(API_ERROR)
+        )
+
+        val actual = withContext(this.coroutineContext) {
+            source.load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    loadSize = ARTICLES.size,
+                    placeholdersEnabled = false
+                )
+            )
+        }
+
+        assertEquals(expected.toString(), actual.toString())
     }
 
     @Test

@@ -1,12 +1,8 @@
 package com.hfaria.ctw.topheadlines.data.repository
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.hfaria.ctw.topheadlines.data.network.GetTopHeadlinesResponse
-import com.hfaria.ctw.topheadlines.data.network.SuccessNetworkResponse
-import com.hfaria.ctw.topheadlines.data.network.ThrowableNetworkResponse
-import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
+import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.domain.Article
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +14,7 @@ class InMemoryTopHeadlinesPagingSource(
 
     companion object {
         const val UNKNOWN_NETWORK_ERROR = "UNKNOWN_NETWORK_ERROR"
+        const val API_ERROR = "API_ERROR"
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
@@ -32,14 +29,20 @@ class InMemoryTopHeadlinesPagingSource(
             }
 
             if (response is SuccessNetworkResponse<GetTopHeadlinesResponse>) {
-                val articles = response.data.articles
-                val nextPage = if (articles.size >= pageSize) curPage + 1 else null
-                LoadResult.Page(
-                    data = response.data.articles,
-                    // Only paging forward
-                    prevKey = null,
-                    nextKey = nextPage
-                )
+                val data = response.data
+
+                if (data.status != NewsApiStatus.OK) {
+                    LoadResult.Error(Throwable(API_ERROR))
+                } else {
+                    val articles = data.articles
+                    val nextPage = if (articles.size >= pageSize) curPage + 1 else null
+                    LoadResult.Page(
+                        data = data.articles,
+                        // Only paging forward
+                        prevKey = null,
+                        nextKey = nextPage
+                    )
+                }
             } else if (response is ThrowableNetworkResponse) {
                 LoadResult.Error(response.data)
             } else {

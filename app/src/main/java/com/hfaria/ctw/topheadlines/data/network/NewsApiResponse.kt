@@ -8,16 +8,12 @@ enum class NewsApiStatus {
     OK,
     @SerializedName("error")
     ERROR,
-    DEFAULT
 }
 
-open class NewsApiResponse(
-    val status: NewsApiStatus = NewsApiStatus.DEFAULT,
-    val code: String? = null,
-    val message: String? = null
-)
-
 data class GetTopHeadlinesResponse(
-    val totalResults: Int,
+    val status: NewsApiStatus = NewsApiStatus.OK,
+    val code: String? = null,
+    val message: String? = null,
+    val totalResults: Int = -1,
     val articles: List<Article> = listOf()
-) : NewsApiResponse()
+)
