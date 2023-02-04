@@ -6,13 +6,10 @@ import com.hfaria.ctw.topheadlines.data.network.SuccessNetworkResponse
 import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
 import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource
 import com.hfaria.ctw.topheadlines.domain.Article
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
