@@ -30,7 +30,6 @@ class InMemoryTopHeadlinesPagingSource(
             if (response is SuccessNetworkResponse<GetTopHeadlinesResponse>) {
                 val articles = response.data.articles
                 val nextPage = if (articles.size >= pageSize) curPage + 1 else null
-                Log.e("MYTAG", "ARTICLES: ${articles.size} CUR_PAGE: $curPage")
                 LoadResult.Page(
                     data = response.data.articles,
                     // Only paging forward
@@ -39,16 +38,13 @@ class InMemoryTopHeadlinesPagingSource(
                 )
             } else if (response is ThrowableNetworkResponse) {
                 val msg = response.data.message.orEmpty()
-                Log.e("MYTAG", msg)
                 LoadResult.Error(response.data)
             } else {
                 val msg = "UNKNOWN_ERROR"
-                Log.e("MYTAG", msg)
                 LoadResult.Error(Throwable(msg))
             }
 
         } catch (e: Exception) {
-            Log.e("MYTAG", e.message.orEmpty())
             LoadResult.Error(e)
         }
     }
