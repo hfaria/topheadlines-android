@@ -9,6 +9,7 @@ import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSou
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES_LAST_PAGE
+import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.EXCEPTION
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE_LAST_PAGE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,6 +48,8 @@ object GetTopHeadlinesFakeResponses {
             articles = ARTICLES_LAST_PAGE
         )
     )
+
+    val EXCEPTION = Exception("GetTopHeadlinesFakeException")
 }
 
 @RunWith(MockitoJUnitRunner::class)
@@ -129,5 +132,29 @@ class InMemoryTopHeadlinesPagingSourceTest {
                 nextKey = null
             )
         )
+    }
+
+    @Test
+    fun `Should handle API Exception`() = runBlocking {
+        `when`(api.getTopHeadlines(
+            anyString(),
+            anyInt(),
+            anyInt()
+        )).then { throw EXCEPTION }
+
+        val expected = PagingSource.LoadResult.Error<Int, Article>(
+            EXCEPTION
+        )
+        val actual = withContext(this.coroutineContext) {
+            source.load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    loadSize = ARTICLES.size,
+                    placeholdersEnabled = false
+                )
+            )
+        }
+
+        assertEquals(expected.toString(), actual.toString())
     }
 }
