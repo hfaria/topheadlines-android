@@ -16,7 +16,6 @@ class NetworkResponseCallAdapter<R>(private val responseType: Type) :
             val retrofitResponse = call.execute()
             mapIntoNetworkResponse<R>(retrofitResponse)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
             ThrowableNetworkResponse(throwable)
         }
     }
