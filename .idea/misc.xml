@@ -7,7 +7,7 @@
         <entry key="app/src/main/res/layout/activity_top_headlines.xml" value="0.15052083333333333" />
         <entry key="app/src/main/res/layout/fragment_article_content.xml" value="0.240625" />
         <entry key="app/src/main/res/layout/fragment_top_headlines.xml" value="0.14322916666666666" />
-        <entry key="app/src/main/res/layout/top_headlines_list_item.xml" value="0.15052083333333333" />
+        <entry key="app/src/main/res/layout/top_headlines_list_item.xml" value="0.25" />
       </map>
     </option>
   </component>

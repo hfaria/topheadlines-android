@@ -15,6 +15,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
 
+            <ImageView
+                android:id="@+id/iv_article_image"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
@@ -22,7 +29,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@id/iv_article_image"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="Headline Title 1" />

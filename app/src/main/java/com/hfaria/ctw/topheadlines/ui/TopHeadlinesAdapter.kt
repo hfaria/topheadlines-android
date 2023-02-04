@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfaria.ctw.topheadlines.R
 import com.hfaria.ctw.topheadlines.domain.Article
+import com.squareup.picasso.Picasso
 
 class TopHeadlinesAdapter(
     private val onClick: (Article) -> Unit
@@ -21,8 +23,8 @@ class TopHeadlinesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val challenge = getItem(position)
-        holder.bind(challenge)
+        val article = getItem(position)
+        holder.bind(article)
     }
 
     class ViewHolder(
@@ -31,6 +33,7 @@ class TopHeadlinesAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+        private val ivArticleImage: AppCompatImageView = itemView.findViewById(R.id.iv_article_image)
         private var article: Article? = null
 
         init {
@@ -44,6 +47,12 @@ class TopHeadlinesAdapter(
         fun bind(article: Article?) {
             this.article = article
             tvTitle.text = article?.title
+            article?.urlToImage?.let {
+                Picasso.get().load(it)
+                    .fit()
+                    .centerCrop()
+                    .into(ivArticleImage)
+            }
         }
     }
 }
