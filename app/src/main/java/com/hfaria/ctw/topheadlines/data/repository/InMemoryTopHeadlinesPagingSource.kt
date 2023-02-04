@@ -20,37 +20,44 @@ class InMemoryTopHeadlinesPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         return try {
             val curPage = params.key ?: 1
-
-            val response = withContext(Dispatchers.IO) {
-                api.getTopHeadlines(
-                    pageSize = pageSize,
-                    page = curPage
-                )
-            }
-
-            if (response is SuccessNetworkResponse<GetTopHeadlinesResponse>) {
-                val data = response.data
-
-                if (data.status != NewsApiStatus.OK) {
-                    LoadResult.Error(Throwable(API_ERROR))
-                } else {
-                    val articles = data.articles
-                    val nextPage = if (articles.size >= pageSize) curPage + 1 else null
-                    LoadResult.Page(
-                        data = data.articles,
-                        // Only paging forward
-                        prevKey = null,
-                        nextKey = nextPage
-                    )
-                }
-            } else if (response is ThrowableNetworkResponse) {
-                LoadResult.Error(response.data)
-            } else {
-                LoadResult.Error(Throwable(UNKNOWN_NETWORK_ERROR))
-            }
-
+            val response = callApi(curPage)
+            parseNetworkResponse(curPage, response)
         } catch (e: Exception) {
             LoadResult.Error(e)
+        }
+    }
+
+    private fun parseNetworkResponse(curPage: Int, response: NetworkResponse<GetTopHeadlinesResponse>): LoadResult<Int, Article> {
+        return if (response is SuccessNetworkResponse<GetTopHeadlinesResponse>) {
+            parseApiResponse(curPage, response.data)
+        } else if (response is ThrowableNetworkResponse) {
+            LoadResult.Error(response.data)
+        } else {
+            LoadResult.Error(Throwable(UNKNOWN_NETWORK_ERROR))
+        }
+    }
+
+    private fun parseApiResponse(curPage: Int, data: GetTopHeadlinesResponse): LoadResult<Int, Article> {
+        return if (data.status != NewsApiStatus.OK) {
+            LoadResult.Error(Throwable(API_ERROR))
+        } else {
+            val articles = data.articles
+            val nextPage = if (articles.size >= pageSize) curPage + 1 else null
+            LoadResult.Page(
+                data = data.articles,
+                // Only paging forward
+                prevKey = null,
+                nextKey = nextPage
+            )
+        }
+    }
+
+    private suspend fun callApi(curPage: Int): NetworkResponse<GetTopHeadlinesResponse> {
+        return withContext(Dispatchers.IO) {
+            api.getTopHeadlines(
+                pageSize = pageSize,
+                page = curPage
+            )
         }
     }
 
