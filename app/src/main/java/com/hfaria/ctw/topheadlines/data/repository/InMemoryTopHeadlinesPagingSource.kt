@@ -16,6 +16,10 @@ class InMemoryTopHeadlinesPagingSource(
     private val pageSize: Int
 ) : PagingSource<Int, Article>() {
 
+    companion object {
+        const val UNKNOWN_NETWORK_ERROR = "UNKNOWN_NETWORK_ERROR"
+    }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         return try {
             val curPage = params.key ?: 1
@@ -37,11 +41,9 @@ class InMemoryTopHeadlinesPagingSource(
                     nextKey = nextPage
                 )
             } else if (response is ThrowableNetworkResponse) {
-                val msg = response.data.message.orEmpty()
                 LoadResult.Error(response.data)
             } else {
-                val msg = "UNKNOWN_ERROR"
-                LoadResult.Error(Throwable(msg))
+                LoadResult.Error(Throwable(UNKNOWN_NETWORK_ERROR))
             }
 
         } catch (e: Exception) {

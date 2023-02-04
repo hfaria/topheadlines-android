@@ -1,17 +1,17 @@
 package com.hfaria.ctw.topheadlines.unit.data
 
 import androidx.paging.PagingSource
-import com.hfaria.ctw.topheadlines.data.network.GetTopHeadlinesResponse
-import com.hfaria.ctw.topheadlines.data.network.NetworkResponse
-import com.hfaria.ctw.topheadlines.data.network.SuccessNetworkResponse
-import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
+import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource
+import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource.Companion.UNKNOWN_NETWORK_ERROR
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.ARTICLES_LAST_PAGE
+import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.EMPTY_NETWORK_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.EXCEPTION
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE_LAST_PAGE
+import com.hfaria.ctw.topheadlines.unit.data.GetTopHeadlinesFakeResponses.THROWABLE_NETWORK_RESPONSE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -50,6 +50,12 @@ object GetTopHeadlinesFakeResponses {
     )
 
     val EXCEPTION = Exception("GetTopHeadlinesFakeException")
+
+    val THROWABLE_NETWORK_RESPONSE = ThrowableNetworkResponse<GetTopHeadlinesResponse>(
+        EXCEPTION
+    )
+
+    val EMPTY_NETWORK_RESPONSE = EmptyNetworkResponse<GetTopHeadlinesResponse>()
 }
 
 @RunWith(MockitoJUnitRunner::class)
@@ -144,6 +150,54 @@ class InMemoryTopHeadlinesPagingSourceTest {
 
         val expected = PagingSource.LoadResult.Error<Int, Article>(
             EXCEPTION
+        )
+        val actual = withContext(this.coroutineContext) {
+            source.load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    loadSize = ARTICLES.size,
+                    placeholdersEnabled = false
+                )
+            )
+        }
+
+        assertEquals(expected.toString(), actual.toString())
+    }
+
+    @Test
+    fun `Should handle ThrowableNetworkResponse`() = runBlocking {
+        `when`(api.getTopHeadlines(
+            anyString(),
+            anyInt(),
+            anyInt()
+        )).thenReturn(THROWABLE_NETWORK_RESPONSE)
+
+        val expected = PagingSource.LoadResult.Error<Int, Article>(
+            EXCEPTION
+        )
+        val actual = withContext(this.coroutineContext) {
+            source.load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    loadSize = ARTICLES.size,
+                    placeholdersEnabled = false
+                )
+            )
+        }
+
+        assertEquals(expected.toString(), actual.toString())
+    }
+
+    @Test
+    fun `Should handle any other NetworkResponse`() = runBlocking {
+        `when`(api.getTopHeadlines(
+            anyString(),
+            anyInt(),
+            anyInt()
+        )).thenReturn(EMPTY_NETWORK_RESPONSE)
+
+        val expected = PagingSource.LoadResult.Error<Int, Article>(
+            Throwable(UNKNOWN_NETWORK_ERROR)
         )
         val actual = withContext(this.coroutineContext) {
             source.load(
