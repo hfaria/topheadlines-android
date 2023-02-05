@@ -43,7 +43,6 @@ class TopHeadlinesViewModel @Inject constructor(
     private val topHeadlines: TopHeadlinesRepository
 ) : ViewModel() {
 
-
     fun getTopHeadlines() {
         viewModelScope.launch {
             topHeadlines.get()
