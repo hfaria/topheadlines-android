@@ -40,6 +40,12 @@ class TopHeadlinesUIModuleTest : BaseCoroutineTest() {
         val flow = flowOf(page)
         `when`(repo.get()).thenReturn(flow)
         vm.getTopHeadlines()
+
+        /*
+            We need to use "any()" matcher here because Flow creates
+            a new instance of emitted objects for each subscriber
+            to prevent any race conditions.
+        */
         verify(state, times(1)).loadArticlePage(any(page.javaClass))
     }
 
