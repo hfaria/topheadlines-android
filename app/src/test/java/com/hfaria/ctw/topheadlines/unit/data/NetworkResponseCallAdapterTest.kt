@@ -3,9 +3,11 @@ package com.hfaria.ctw.topheadlines.unit.data
 import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.EMPTY_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.EXCEPTION
+import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.NOT_FOUND_RESPONSE
 import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.SUCCESS_RESPONSE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -19,12 +21,13 @@ import retrofit2.Response
 
 object RetrofitFakeResponses {
 
-    val SUCCESS_RESPONSE = Response.success(
-        GetTopHeadlinesResponse()
-    )
+    val SUCCESS_RESPONSE = Response.success(GetTopHeadlinesResponse())
 
-    val EMPTY_RESPONSE = Response.success<GetTopHeadlinesResponse>(
-        null
+    val EMPTY_RESPONSE = Response.success<GetTopHeadlinesResponse>(null)
+
+    val NOT_FOUND_RESPONSE = Response.error<GetTopHeadlinesResponse>(
+        404,
+        ResponseBody.create(null, "")
     )
 
     val EXCEPTION = Exception("RetrofitFakeException")
@@ -61,6 +64,13 @@ class NetworkResponseCallAdapterTest {
         `when`(call.execute()).thenReturn(EMPTY_RESPONSE)
         val networkResponse = adapter.adapt(call)
         assertTrue(networkResponse is EmptyNetworkResponse)
+    }
+
+    @Test
+    fun `Should handle 404 - Not Found response`() = runBlocking {
+        `when`(call.execute()).thenReturn(NOT_FOUND_RESPONSE)
+        val networkResponse = adapter.adapt(call)
+        assertTrue(networkResponse is NotFoundNetworkResponse)
     }
 
     @Test
