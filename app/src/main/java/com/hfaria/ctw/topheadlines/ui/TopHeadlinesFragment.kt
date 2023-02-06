@@ -13,11 +13,13 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.hfaria.ctw.topheadlines.BuildConfig
 import com.hfaria.ctw.topheadlines.R
 import com.hfaria.ctw.topheadlines.databinding.FragmentTopHeadlinesBinding
 import com.hfaria.ctw.topheadlines.ui.article_content.ArticleContentActivity
 import com.hfaria.ctw.topheadlines.ui.base.BaseFragment
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
@@ -65,6 +67,16 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
         state.articlePage.observe(viewLifecycleOwner) { page ->
             lifecycleScope.launch {
                 adapter.submitData(page)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { state ->
+                if (state.refresh is LoadState.Loading) {
+                    binding.cpiFetching.visibility = View.VISIBLE
+                } else {
+                    binding.cpiFetching.visibility = View.GONE
+                }
             }
         }
     }
