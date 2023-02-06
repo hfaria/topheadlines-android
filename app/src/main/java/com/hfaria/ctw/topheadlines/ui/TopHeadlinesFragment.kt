@@ -43,12 +43,15 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         setupObservables(viewModel.state)
         setupRoutes(viewModel.state)
-        viewModel.getTopHeadlines()
 
-        if (BuildConfig.ENABLE_FINGERPRINT_SCANNING &&
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            isBiometricAuthAvailable()) {
-            showBiometricPrompt()
+        if (savedInstanceState == null) {
+            viewModel.getTopHeadlines()
+
+            if (BuildConfig.ENABLE_FINGERPRINT_SCANNING &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                isBiometricAuthAvailable()) {
+                showBiometricPrompt()
+            }
         }
     }
 

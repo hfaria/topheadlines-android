@@ -3,6 +3,7 @@ package com.hfaria.ctw.topheadlines.ui
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.hfaria.ctw.topheadlines.android.util.SingleLiveEvent
 import com.hfaria.ctw.topheadlines.ui.base.BaseScreenState
 import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
@@ -27,7 +28,7 @@ class TopHeadlinesScreenStateImpl : TopHeadlinesScreenState, BaseScreenState() {
 
     override val articleProfileRoute: LiveData<Article>
         get() = _articleProfileRoute
-    private val _articleProfileRoute = MutableLiveData<Article>()
+    private val _articleProfileRoute = SingleLiveEvent<Article>()
 
     override fun routeToHeadlineProfile(article: Article) {
         _articleProfileRoute.value = article
