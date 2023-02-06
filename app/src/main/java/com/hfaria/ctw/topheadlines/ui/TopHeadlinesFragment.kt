@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
@@ -27,6 +26,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
     private lateinit var binding: FragmentTopHeadlinesBinding
     private lateinit var adapter: TopHeadlinesAdapter
     private val allowedAuthenticators = BIOMETRIC_WEAK
+    private var dialog: AlertDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,7 +122,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
     }
 
     private fun showErrorDialog(ctx: Context, message: String) {
-        AlertDialog.Builder(ctx)
+        dialog = AlertDialog.Builder(ctx)
             .setTitle(R.string.error_dialog_title)
             .setMessage(message)
             .setPositiveButton(R.string.error_dialog_ok_button) { _, _ ->
@@ -130,7 +130,16 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
             }
             .setCancelable(false)
             .create()
-            .show()
+        dialog?.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dialog?.let {
+            if (it.isShowing) {
+                it.dismiss()
+            }
+        }
     }
 }
 
