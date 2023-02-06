@@ -70,10 +70,13 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { state ->
-                if (state.refresh is LoadState.Loading) {
-                    binding.cpiFetching.visibility = View.VISIBLE
-                } else {
-                    binding.cpiFetching.visibility = View.GONE
+                when(state.refresh) {
+                    is LoadState.NotLoading -> binding.cpiFetching.visibility = View.GONE
+                    LoadState.Loading -> binding.cpiFetching.visibility = View.VISIBLE
+                    is LoadState.Error -> showErrorDialog(
+                        requireContext(),
+                        (state.refresh as LoadState.Error).error.toString()
+                    )
                 }
             }
         }
