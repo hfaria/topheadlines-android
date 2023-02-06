@@ -15,6 +15,11 @@ android {
         versionName "1.0"
 
         buildConfigField(
+            "Boolean", "ENABLE_FINGERPRINT_SCANNING",
+            "true"
+        )
+
+        buildConfigField(
             "String", "NEWS_API",
             "\"https://newsapi.org/v2/\""
         )
@@ -137,4 +142,7 @@ dependencies {
 
     // Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    // Biometry
+    implementation "androidx.biometric:biometric:1.1.0"
 }

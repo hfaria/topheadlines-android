@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">TopHeadlines</string>
+
+    <string name="biometric_login_dialog_title">Biometric login required</string>
+    <string name="biometric_login_dialog_subtitle">Log in using your biometric credential</string>
+
+    <string name="biometric_login_auth_failed_message">Authentication failed</string>
+    <string name="biometric_login_auth_error_message">Authentication error: %s ($s)</string>
+
+    <string name="error_dialog_title">ERROR</string>
+    <string name="error_dialog_ok_button">OK</string>
+
+
 </resources>
