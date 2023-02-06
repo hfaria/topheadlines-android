@@ -1,14 +1,13 @@
 package com.hfaria.ctw.topheadlines.unit.data
 
 import com.hfaria.ctw.topheadlines.data.network.*
-import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.EMPTY_RESPONSE
-import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.EXCEPTION
-import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.GENERIC_ERROR_RESPONSE
-import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.NOT_FOUND_RESPONSE
-import com.hfaria.ctw.topheadlines.unit.data.RetrofitFakeResponses.SUCCESS_RESPONSE
+import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.EMPTY_RESPONSE
+import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.EXCEPTION
+import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.GENERIC_ERROR_RESPONSE
+import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.NOT_FOUND_RESPONSE
+import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.SUCCESS_RESPONSE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -18,27 +17,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Call
-import retrofit2.Response
-
-object RetrofitFakeResponses {
-
-    val SUCCESS_RESPONSE = Response.success(GetTopHeadlinesResponse())
-
-    val EMPTY_RESPONSE = Response.success<GetTopHeadlinesResponse>(null)
-
-    val NOT_FOUND_RESPONSE = Response.error<GetTopHeadlinesResponse>(
-        404,
-        ResponseBody.create(null, "")
-    )
-
-    val GENERIC_ERROR = "GENERIC_ERROR"
-    val GENERIC_ERROR_RESPONSE = Response.error<GetTopHeadlinesResponse>(
-        425,
-        ResponseBody.create(null, GENERIC_ERROR )
-    )
-
-    val EXCEPTION = Exception("RetrofitFakeException")
-}
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
