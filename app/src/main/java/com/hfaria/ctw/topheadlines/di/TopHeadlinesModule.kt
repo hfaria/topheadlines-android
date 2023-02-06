@@ -1,10 +1,10 @@
 package com.hfaria.ctw.topheadlines.di
 
 import androidx.lifecycle.ViewModel
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesFragment
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenState
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenStateImpl
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesViewModel
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesFragment
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesScreenState
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesScreenStateImpl
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

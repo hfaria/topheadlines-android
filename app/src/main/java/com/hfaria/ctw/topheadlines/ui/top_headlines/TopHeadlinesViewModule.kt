@@ -1,4 +1,4 @@
-package com.hfaria.ctw.topheadlines.ui
+package com.hfaria.ctw.topheadlines.ui.top_headlines
 
 import androidx.lifecycle.*
 import androidx.paging.PagingData

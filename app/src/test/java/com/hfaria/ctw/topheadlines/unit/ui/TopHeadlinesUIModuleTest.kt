@@ -3,8 +3,8 @@ package com.hfaria.ctw.topheadlines.unit.ui
 import androidx.paging.PagingData
 import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenState
-import com.hfaria.ctw.topheadlines.ui.TopHeadlinesViewModel
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesScreenState
+import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesViewModel
 import com.hfaria.ctw.topheadlines.unit.base.BaseCoroutineTest
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before

@@ -13,11 +13,11 @@
 
         <variable
             name="vm"
-            type="com.hfaria.ctw.topheadlines.ui.TopHeadlinesViewModel" />
+            type="com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesViewModel" />
 
         <variable
             name="state"
-            type="com.hfaria.ctw.topheadlines.ui.TopHeadlinesScreenState" />
+            type="com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesScreenState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
