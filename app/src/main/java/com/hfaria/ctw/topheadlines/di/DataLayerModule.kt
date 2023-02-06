@@ -45,6 +45,6 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun provideTopHeadlinesRepository(api: TopHeadlinesApi): TopHeadlinesRepository {
-        return InMemoryTopHeadlinesRepository(api, 20)
+        return InMemoryTopHeadlinesRepository(api, BuildConfig.TOP_HEADLINES_PAGE_SIZE)
     }
 }

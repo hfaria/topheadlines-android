@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class InMemoryTopHeadlinesRepository @Inject constructor(
     private val topHeadlinesApi: TopHeadlinesApi,
-    private val pageSize: Int = 20
+    private val pageSize: Int
 ): TopHeadlinesRepository {
 
     override fun get(): Flow<PagingData<Article>> = Pager (

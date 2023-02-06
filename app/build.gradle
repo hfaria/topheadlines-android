@@ -29,6 +29,11 @@ android {
             "\"4ed207b802d54b0a862ef7a2c7e401cb\""
         )
 
+        buildConfigField(
+                "int", "TOP_HEADLINES_PAGE_SIZE",
+                "20"
+        )
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -50,7 +55,7 @@ android {
             versionName = "1.0.0"
 
             buildConfigField(
-                    "String", "NEWS_SOURCE",
+                    "String", "NEWS_SOURCE_API_ID",
                     "\"bbc-news\""
             )
 
@@ -68,7 +73,7 @@ android {
             versionName = "1.0.0"
 
             buildConfigField(
-                    "String", "NEWS_SOURCE",
+                    "String", "NEWS_SOURCE_API_ID",
                     "\"cnn\""
             )
 
