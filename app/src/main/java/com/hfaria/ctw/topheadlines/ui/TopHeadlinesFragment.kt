@@ -59,9 +59,7 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
 
     private fun setupObservables(state: TopHeadlinesScreenState) {
         state.errorMessage.observe(viewLifecycleOwner) { message ->
-            Toast
-                .makeText(requireActivity(), message, Toast.LENGTH_LONG)
-                .show()
+            this.showErrorDialog(requireContext(), message)
         }
 
         state.articlePage.observe(viewLifecycleOwner) { page ->
@@ -93,21 +91,21 @@ class TopHeadlinesFragment : BaseFragment<TopHeadlinesViewModel>() {
     }
 
     private fun showBiometricPrompt() {
-        val appContext = requireActivity().applicationContext
-        val executor = ContextCompat.getMainExecutor(appContext)
+        val context = requireContext()
+        val executor = ContextCompat.getMainExecutor(context)
         val biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int,
                                                    errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     val msg = getString(R.string.biometric_login_auth_error_message, errString, errorCode.toString())
-                    showErrorDialog(appContext, msg)
+                    showErrorDialog(context, msg)
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     val msg = getString(R.string.biometric_login_auth_failed_message)
-                    showErrorDialog(appContext, msg)
+                    showErrorDialog(context, msg)
                 }
             })
 

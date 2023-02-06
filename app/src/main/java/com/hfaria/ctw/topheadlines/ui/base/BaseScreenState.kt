@@ -9,6 +9,7 @@ interface ErrorScreenState {
 
     fun showErrorMessage(message: String)
     fun showErrorMessage(errorId: Int)
+    fun showErrorMessage(throwable: Throwable)
 }
 
 interface LoadingScreenState {
@@ -37,6 +38,10 @@ abstract class BaseScreenState : ErrorScreenState, LoadingScreenState {
 
     override fun showErrorMessage(errorId: Int) {
         _errorId.value = errorId
+    }
+
+    override fun showErrorMessage(throwable: Throwable) {
+        showErrorMessage(throwable.toString())
     }
 
     override fun setLoadingState(state: Boolean) {

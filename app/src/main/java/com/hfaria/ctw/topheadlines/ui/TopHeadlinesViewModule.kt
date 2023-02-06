@@ -9,6 +9,7 @@ import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.ui.base.ErrorScreenState
 import com.hfaria.ctw.topheadlines.ui.base.LoadingScreenState
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class TopHeadlinesViewModel @Inject constructor(
         viewModelScope.launch {
             topHeadlines.get()
                 .cachedIn(viewModelScope)
+                .catch { state.showErrorMessage(it) }
                 .collect(state::loadArticlePage)
         }
     }
