@@ -14,7 +14,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.hfaria.ctw.topheadlines.BuildConfig
 import com.hfaria.ctw.topheadlines.R
 import com.hfaria.ctw.topheadlines.databinding.FragmentTopHeadlinesBinding

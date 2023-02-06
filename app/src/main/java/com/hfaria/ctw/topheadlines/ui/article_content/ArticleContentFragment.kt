@@ -23,7 +23,11 @@ class ArticleContentFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.article = article
         article.urlToImage?.let {
-            Picasso.get().load(it).into(binding.ivArticleBanner)
+            Picasso.get()
+                .load(it)
+                .fit()
+                .centerCrop()
+                .into(binding.ivArticleBanner)
         }
         return binding.root
     }
