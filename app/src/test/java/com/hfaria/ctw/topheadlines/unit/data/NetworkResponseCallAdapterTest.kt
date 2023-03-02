@@ -8,8 +8,6 @@ import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.NOT_FOUND_RES
 import com.hfaria.ctw.topheadlines.unit.mock.RetrofitFakeResponses.SUCCESS_RESPONSE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +15,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Call
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)

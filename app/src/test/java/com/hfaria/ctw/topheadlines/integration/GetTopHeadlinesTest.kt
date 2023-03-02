@@ -3,10 +3,10 @@ package com.hfaria.ctw.topheadlines.integration
 import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.integration.setup.NetworkTestComponent
 import com.hfaria.ctw.topheadlines.integration.setup.BaseNetworkTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import javax.inject.Inject
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class GetTopHeadlinesTest: BaseNetworkTest() {
 

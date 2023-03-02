@@ -9,12 +9,12 @@ import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.mock.GetTopHeadlinesFakeResponses.ARTICLES
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.assertEquals
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
