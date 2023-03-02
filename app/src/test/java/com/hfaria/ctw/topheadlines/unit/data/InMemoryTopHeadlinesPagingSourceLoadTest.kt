@@ -47,7 +47,7 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     private suspend fun runPageLoadingTest(
         curPage: Int?,
         apiResponse: NetworkResponse<GetTopHeadlinesResponse>,
-        expected: PagingSource.LoadResult.Page<Int, Article>
+        expected: PagingSource.LoadResult<Int, Article>
     ) {
         Mockito.`when`(
             api.getTopHeadlines(
@@ -109,33 +109,46 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
 
     @Test
     fun `Should handle NewsApiStatus ERROR response`() = runBlocking {
-        Mockito.`when`(
-            api.getTopHeadlines(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyInt(),
-                ArgumentMatchers.anyInt()
+        runPageLoadingTest(
+            curPage = 1,
+            apiResponse = GetTopHeadlinesFakeResponses.API_ERROR_RESPONSE,
+            expected = PagingSource.LoadResult.Error(
+                Throwable(InMemoryTopHeadlinesPagingSource.API_ERROR)
             )
-        ).thenReturn(GetTopHeadlinesFakeResponses.API_ERROR_RESPONSE)
-
-        val expected = PagingSource.LoadResult.Error<Int, Article>(
-            Throwable(InMemoryTopHeadlinesPagingSource.API_ERROR)
         )
+    }
 
-        val actual = withContext(this.coroutineContext) {
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = null,
-                    loadSize = GetTopHeadlinesFakeResponses.ARTICLES.size,
-                    placeholdersEnabled = false
-                )
+    @Test
+    fun `Should handle ThrowableNetworkResponse`() = runBlocking {
+        runPageLoadingTest(
+            curPage = 1,
+            apiResponse = GetTopHeadlinesFakeResponses.THROWABLE_NETWORK_RESPONSE,
+            expected = PagingSource.LoadResult.Error(
+                GetTopHeadlinesFakeResponses.EXCEPTION
             )
-        }
+        )
+    }
 
-        Assert.assertEquals(expected.toString(), actual.toString())
+    @Test
+    fun `Should handle any other NetworkResponse`() = runBlocking {
+        runPageLoadingTest(
+            curPage = 1,
+            apiResponse = GetTopHeadlinesFakeResponses.EMPTY_NETWORK_RESPONSE,
+            expected = PagingSource.LoadResult.Error(
+                Throwable(InMemoryTopHeadlinesPagingSource.UNKNOWN_NETWORK_ERROR)
+            )
+        )
     }
 
     @Test
     fun `Should handle API Exception`() = runBlocking {
+        runPageLoadingTest(
+            curPage = 1,
+            apiResponse = GetTopHeadlinesFakeResponses.API_ERROR_RESPONSE,
+            expected = PagingSource.LoadResult.Error(
+                Throwable(InMemoryTopHeadlinesPagingSource.API_ERROR)
+            )
+        )
         Mockito.`when`(
             api.getTopHeadlines(
                 ArgumentMatchers.anyString(),
@@ -146,58 +159,6 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
 
         val expected = PagingSource.LoadResult.Error<Int, Article>(
             GetTopHeadlinesFakeResponses.EXCEPTION
-        )
-        val actual = withContext(this.coroutineContext) {
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = null,
-                    loadSize = GetTopHeadlinesFakeResponses.ARTICLES.size,
-                    placeholdersEnabled = false
-                )
-            )
-        }
-
-        Assert.assertEquals(expected.toString(), actual.toString())
-    }
-
-    @Test
-    fun `Should handle ThrowableNetworkResponse`() = runBlocking {
-        Mockito.`when`(
-            api.getTopHeadlines(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyInt(),
-                ArgumentMatchers.anyInt()
-            )
-        ).thenReturn(GetTopHeadlinesFakeResponses.THROWABLE_NETWORK_RESPONSE)
-
-        val expected = PagingSource.LoadResult.Error<Int, Article>(
-            GetTopHeadlinesFakeResponses.EXCEPTION
-        )
-        val actual = withContext(this.coroutineContext) {
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = null,
-                    loadSize = GetTopHeadlinesFakeResponses.ARTICLES.size,
-                    placeholdersEnabled = false
-                )
-            )
-        }
-
-        Assert.assertEquals(expected.toString(), actual.toString())
-    }
-
-    @Test
-    fun `Should handle any other NetworkResponse`() = runBlocking {
-        Mockito.`when`(
-            api.getTopHeadlines(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyInt(),
-                ArgumentMatchers.anyInt()
-            )
-        ).thenReturn(GetTopHeadlinesFakeResponses.EMPTY_NETWORK_RESPONSE)
-
-        val expected = PagingSource.LoadResult.Error<Int, Article>(
-            Throwable(InMemoryTopHeadlinesPagingSource.UNKNOWN_NETWORK_ERROR)
         )
         val actual = withContext(this.coroutineContext) {
             source.load(
