@@ -5,9 +5,10 @@ import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesScreenState
 import com.hfaria.ctw.topheadlines.ui.top_headlines.TopHeadlinesViewModel
-import com.hfaria.ctw.topheadlines.unit.base.BaseCoroutineTest
+import com.hfaria.ctw.topheadlines.unit.rules.MainDispatcherRule
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -18,7 +19,10 @@ import org.mockito.junit.MockitoJUnitRunner
 private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
 
 @RunWith(MockitoJUnitRunner::class)
-class TopHeadlinesUIModuleTest : BaseCoroutineTest() {
+class TopHeadlinesUIModuleTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Mock
     lateinit var state: TopHeadlinesScreenState
