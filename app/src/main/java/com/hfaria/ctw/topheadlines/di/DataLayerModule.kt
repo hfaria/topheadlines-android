@@ -7,6 +7,7 @@ import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesRepositor
 import com.hfaria.ctw.topheadlines.data.repository.TopHeadlinesRepository
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -45,6 +46,10 @@ class DataLayerModule {
     @Singleton
     @Provides
     fun provideTopHeadlinesRepository(api: TopHeadlinesApi): TopHeadlinesRepository {
-        return InMemoryTopHeadlinesRepository(api, BuildConfig.TOP_HEADLINES_PAGE_SIZE)
+        return InMemoryTopHeadlinesRepository(
+            api,
+            Dispatchers.IO,
+            BuildConfig.TOP_HEADLINES_PAGE_SIZE
+        )
     }
 }

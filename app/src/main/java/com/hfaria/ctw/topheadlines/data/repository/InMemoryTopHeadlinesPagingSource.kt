@@ -4,10 +4,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.hfaria.ctw.topheadlines.data.network.*
 import com.hfaria.ctw.topheadlines.domain.Article
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class InMemoryTopHeadlinesPagingSource(
+    private val ioDispatcher: CoroutineDispatcher,
     private val api: TopHeadlinesApi,
     private val pageSize: Int
 ) : PagingSource<Int, Article>() {
@@ -20,7 +23,7 @@ class InMemoryTopHeadlinesPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         return try {
             val curPage = params.key ?: 1
-            val response = callApi(curPage)
+            val response = callApi(ioDispatcher, curPage)
             parseNetworkResponse(curPage, response)
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -52,8 +55,8 @@ class InMemoryTopHeadlinesPagingSource(
         }
     }
 
-    private suspend fun callApi(curPage: Int): NetworkResponse<GetTopHeadlinesResponse> {
-        return withContext(Dispatchers.IO) {
+    private suspend fun callApi(dispatcher: CoroutineDispatcher, curPage: Int): NetworkResponse<GetTopHeadlinesResponse> {
+        return withContext(dispatcher) {
             api.getTopHeadlines(
                 pageSize = pageSize,
                 page = curPage

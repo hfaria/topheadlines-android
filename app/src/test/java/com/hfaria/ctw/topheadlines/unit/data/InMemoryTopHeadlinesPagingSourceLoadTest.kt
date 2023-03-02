@@ -9,6 +9,7 @@ import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.mock.GetTopHeadlinesFakeResponses
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Before
@@ -31,7 +32,11 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
 
     @Before
     fun setup() {
-        source = InMemoryTopHeadlinesPagingSource(api, GetTopHeadlinesFakeResponses.ARTICLES.size)
+        source = InMemoryTopHeadlinesPagingSource(
+            TestCoroutineDispatcher(),
+            api,
+            GetTopHeadlinesFakeResponses.ARTICLES.size
+        )
     }
 
     private suspend fun runPageLoadingTest(

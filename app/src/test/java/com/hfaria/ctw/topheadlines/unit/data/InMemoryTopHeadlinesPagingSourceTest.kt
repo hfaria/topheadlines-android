@@ -8,6 +8,7 @@ import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSou
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.mock.GetTopHeadlinesFakeResponses.ARTICLES
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -26,7 +27,11 @@ class InMemoryTopHeadlinesPagingSourceGetRefreshKeyTest {
 
     @Before
     fun setup() {
-        source = InMemoryTopHeadlinesPagingSource(api, ARTICLES.size)
+        source = InMemoryTopHeadlinesPagingSource(
+            TestCoroutineDispatcher(),
+            api,
+            ARTICLES.size
+        )
     }
 
     @Test
