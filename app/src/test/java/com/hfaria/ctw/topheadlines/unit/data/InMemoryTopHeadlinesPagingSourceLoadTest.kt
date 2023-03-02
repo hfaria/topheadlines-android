@@ -7,23 +7,28 @@ import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
 import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.mock.GetTopHeadlinesFakeResponses
+import com.hfaria.ctw.topheadlines.unit.rules.MainDispatcherRule
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import kotlin.coroutines.CoroutineContext
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class InMemoryTopHeadlinesPagingSourceLoadTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Mock
     lateinit var api: TopHeadlinesApi
@@ -33,14 +38,13 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     @Before
     fun setup() {
         source = InMemoryTopHeadlinesPagingSource(
-            TestCoroutineDispatcher(),
+            mainDispatcherRule.testDispatcher,
             api,
             GetTopHeadlinesFakeResponses.ARTICLES.size
         )
     }
 
     private suspend fun runPageLoadingTest(
-        context: CoroutineContext,
         curPage: Int?,
         apiResponse: NetworkResponse<GetTopHeadlinesResponse>,
         expected: PagingSource.LoadResult.Page<Int, Article>
@@ -53,15 +57,13 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
             )
         ).thenReturn(apiResponse)
 
-        val actual = withContext(context) {
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = curPage,
-                    loadSize = GetTopHeadlinesFakeResponses.ARTICLES.size,
-                    placeholdersEnabled = false
-                )
+        val actual = source.load(
+            PagingSource.LoadParams.Refresh(
+                key = curPage,
+                loadSize = GetTopHeadlinesFakeResponses.ARTICLES.size,
+                placeholdersEnabled = false
             )
-        }
+        )
 
         Assert.assertEquals(expected.toString(), actual.toString())
     }
@@ -69,7 +71,6 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     @Test
     fun `Load first page`() = runBlocking {
         runPageLoadingTest(
-            context = this.coroutineContext,
             curPage = null,
             apiResponse = GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE,
             expected = PagingSource.LoadResult.Page(
@@ -83,7 +84,6 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     @Test
     fun `Load middle page`() = runBlocking {
         runPageLoadingTest(
-            context = this.coroutineContext,
             curPage = 4,
             apiResponse = GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE,
             expected = PagingSource.LoadResult.Page(
@@ -97,7 +97,6 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     @Test
     fun `Load last page`() = runBlocking {
         runPageLoadingTest(
-            context = this.coroutineContext,
             curPage = 4,
             apiResponse = GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE_LAST_PAGE,
             expected = PagingSource.LoadResult.Page(
