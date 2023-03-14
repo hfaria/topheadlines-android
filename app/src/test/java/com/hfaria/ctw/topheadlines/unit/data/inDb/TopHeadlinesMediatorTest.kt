@@ -5,6 +5,7 @@ import com.hfaria.ctw.topheadlines.data.db.TopHeadlinesDbRepository
 import com.hfaria.ctw.topheadlines.data.network.GetTopHeadlinesResponse
 import com.hfaria.ctw.topheadlines.data.network.NetworkResponse
 import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
+import com.hfaria.ctw.topheadlines.data.repository.InMemoryTopHeadlinesPagingSource
 import com.hfaria.ctw.topheadlines.data.repository.inDb.TopHeadlinesMediator
 import com.hfaria.ctw.topheadlines.domain.Article
 import com.hfaria.ctw.topheadlines.unit.mock.GetTopHeadlinesFakeResponses
@@ -88,10 +89,43 @@ class TopHeadlinesMediatorLoadTest {
         if (actual is RemoteMediator.MediatorResult.Error) {
             val expectedThrowable = (expected as RemoteMediator.MediatorResult.Error).throwable
             val actualThrowable  = actual.throwable
-            assertEquals(expectedThrowable, actualThrowable)
+            assertEquals(expectedThrowable.toString(), actualThrowable.toString())
         } else {
             assertEquals(expected.toString(), actual.toString())
         }
+    }
+
+    @Test
+    fun `Should handle NewsApiStatus ERROR response`() = runBlocking {
+        givenApiResponse(GetTopHeadlinesFakeResponses.API_ERROR_RESPONSE)
+        runPageLoadingTest(
+            loadType = LoadType.REFRESH,
+            expected = RemoteMediator.MediatorResult.Error(
+                Throwable(InMemoryTopHeadlinesPagingSource.API_ERROR)
+            )
+        )
+    }
+
+    @Test
+    fun `Should handle ThrowableNetworkResponse`() = runBlocking {
+        givenApiResponse(GetTopHeadlinesFakeResponses.THROWABLE_NETWORK_RESPONSE)
+        runPageLoadingTest(
+            loadType = LoadType.REFRESH,
+            expected = RemoteMediator.MediatorResult.Error(
+                GetTopHeadlinesFakeResponses.EXCEPTION
+            )
+        )
+    }
+
+    @Test
+    fun `Should handle any other NetworkResponse`() = runBlocking {
+        givenApiResponse(GetTopHeadlinesFakeResponses.EMPTY_NETWORK_RESPONSE)
+        runPageLoadingTest(
+            loadType = LoadType.REFRESH,
+            expected = RemoteMediator.MediatorResult.Error(
+                Throwable(InMemoryTopHeadlinesPagingSource.UNKNOWN_NETWORK_ERROR)
+            )
+        )
     }
 
     @Test

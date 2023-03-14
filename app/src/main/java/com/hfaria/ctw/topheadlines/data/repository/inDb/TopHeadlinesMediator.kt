@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 class TopHeadlinesMediator(
     private val ioDispatcher: CoroutineDispatcher,
     private val api: TopHeadlinesApi,
-    val dbRepository: TopHeadlinesDbRepository,
+    private val dbRepository: TopHeadlinesDbRepository,
     private val pageSize: Int
 ) : RemoteMediator<Int, Article>() {
 
