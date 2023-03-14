@@ -1,6 +1,7 @@
 package com.hfaria.ctw.topheadlines.unit.data.inDb
 
 import androidx.paging.*
+import com.hfaria.ctw.topheadlines.data.db.TopHeadlinesDbRepository
 import com.hfaria.ctw.topheadlines.data.network.GetTopHeadlinesResponse
 import com.hfaria.ctw.topheadlines.data.network.NetworkResponse
 import com.hfaria.ctw.topheadlines.data.network.TopHeadlinesApi
@@ -21,7 +22,7 @@ import kotlin.test.assertEquals
 
 @OptIn(ExperimentalPagingApi::class)
 @RunWith(MockitoJUnitRunner::class)
-class InMemoryTopHeadlinesPagingSourceLoadTest {
+class TopHeadlinesMediatorLoadTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -30,9 +31,22 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     lateinit var api: TopHeadlinesApi
 
     @Mock
+    lateinit var dbRepository: TopHeadlinesDbRepository
+
+    @Mock
     lateinit var state: PagingState<Int, Article>
 
     lateinit var mediator: TopHeadlinesMediator
+
+    @Before
+    fun setup() {
+        mediator = TopHeadlinesMediator(
+            mainDispatcherRule.testDispatcher,
+            api,
+            dbRepository,
+            GetTopHeadlinesFakeResponses.ARTICLES.size
+        )
+    }
 
     private fun givenApiResponse(apiResponse: NetworkResponse<GetTopHeadlinesResponse>) {
         Mockito.`when`(
@@ -54,13 +68,12 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
         ).then { throw t }
     }
 
-    @Before
-    fun setup() {
-        mediator = TopHeadlinesMediator(
-            mainDispatcherRule.testDispatcher,
-            api,
-            GetTopHeadlinesFakeResponses.ARTICLES.size
-        )
+    private fun givenDbException(t: Throwable) {
+        Mockito.`when`(
+            dbRepository.insertAll(
+                ArgumentMatchers.anyList(),
+            )
+        ).then { throw t }
     }
 
     private suspend fun runPageLoadingTest(
@@ -84,6 +97,18 @@ class InMemoryTopHeadlinesPagingSourceLoadTest {
     @Test
     fun `Should handle API Exception`() = runBlocking {
         givenApiException(GetTopHeadlinesFakeResponses.EXCEPTION)
+        runPageLoadingTest(
+            loadType = LoadType.REFRESH,
+            expected = RemoteMediator.MediatorResult.Error(
+                GetTopHeadlinesFakeResponses.EXCEPTION
+            )
+        )
+    }
+
+    @Test
+    fun `Should handle Database Exception`() = runBlocking {
+        givenApiResponse(GetTopHeadlinesFakeResponses.SUCCESS_RESPONSE)
+        givenDbException(GetTopHeadlinesFakeResponses.EXCEPTION)
         runPageLoadingTest(
             loadType = LoadType.REFRESH,
             expected = RemoteMediator.MediatorResult.Error(
