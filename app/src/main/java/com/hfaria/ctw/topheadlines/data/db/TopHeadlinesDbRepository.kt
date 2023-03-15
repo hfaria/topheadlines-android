@@ -4,5 +4,5 @@ import com.hfaria.ctw.topheadlines.domain.Article
 
 interface TopHeadlinesDbRepository {
 
-    fun insertAll(articles: List<Article>)
+    fun insertAll(invalidate: Boolean, articles: List<Article>)
 }

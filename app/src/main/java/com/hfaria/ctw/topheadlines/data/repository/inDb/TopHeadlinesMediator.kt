@@ -21,18 +21,25 @@ class TopHeadlinesMediator(
         state: PagingState<Int, Article>
     ): MediatorResult {
         return try {
+            if (loadType == LoadType.PREPEND) {
+                return MediatorResult.Success(endOfPaginationReached = true)
+            }
+
             val curPage = 1
             val response = callApi(ioDispatcher, curPage)
-            parseNetworkResponse(curPage, response)
+            parseNetworkResponse(loadType, response)
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }
     }
 
-    private fun parseNetworkResponse(curPage: Int, response: NetworkResponse<GetTopHeadlinesResponse>): MediatorResult {
+    private fun parseNetworkResponse(
+        loadType: LoadType,
+        response: NetworkResponse<GetTopHeadlinesResponse>
+    ): MediatorResult {
         return when (response) {
             is SuccessNetworkResponse<GetTopHeadlinesResponse> -> {
-                parseApiResponse(curPage, response.data)
+                parseApiResponse(loadType, response.data)
             }
             is ThrowableNetworkResponse -> {
                 MediatorResult.Error(response.data)
@@ -43,12 +50,13 @@ class TopHeadlinesMediator(
         }
     }
 
-    private fun parseApiResponse(curPage: Int, data: GetTopHeadlinesResponse): MediatorResult {
+    private fun parseApiResponse(loadType: LoadType, data: GetTopHeadlinesResponse): MediatorResult {
         return if (data.status != NewsApiStatus.OK) {
             MediatorResult.Error(Throwable(InMemoryTopHeadlinesPagingSource.API_ERROR))
         } else {
             val articles = data.articles
-            dbRepository.insertAll(articles)
+            val invalidate = (loadType == LoadType.REFRESH)
+            dbRepository.insertAll(invalidate, articles)
             MediatorResult.Success(endOfPaginationReached = false)
         }
     }
